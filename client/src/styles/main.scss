@@ -1,0 +1,123 @@
+@use "./variables" as *;
+@use "./colors";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  font-family: $font-family-base;
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.library {
+  width: min(1100px, calc(100% - $space-8 - $space-4));
+  margin: $space-12 auto;
+}
+
+.library__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $space-6;
+  margin-bottom: $space-8;
+
+  h1 {
+    margin: 0;
+    font-size: $font-size-2xl;
+  }
+
+  p {
+    margin: $space-2 0 0;
+    color: var(--color-text-muted);
+  }
+}
+
+.library__count {
+  white-space: nowrap;
+  font-size: $font-size-sm;
+  color: var(--color-text-muted);
+}
+
+.library__add-book,
+.library__content {
+  margin-bottom: $space-8;
+}
+
+.library__add-book {
+  padding: $space-6;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  background: var(--color-surface);
+
+  h2 {
+    margin: 0;
+    font-size: $font-size-lg;
+  }
+}
+
+.library__toolbar {
+  margin-bottom: $space-4;
+
+  h2 {
+    margin: 0;
+    font-size: $font-size-xl;
+  }
+}
+
+.library__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+  margin-bottom: $space-6;
+}
+
+.library__filter {
+  padding: $space-2 $space-4;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-sm;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+
+  &--active {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-surface);
+  }
+}
+
+.library__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  gap: $space-6;
+}
+
+.library__empty {
+  grid-column: 1 / -1;
+  padding: $space-12 $space-4;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: $radius-md;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .library {
+    width: calc(100% - $space-8);
+    margin: $space-6 auto;
+  }
+
+  .library__header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: $space-3;
+  }
+}
