@@ -47,21 +47,8 @@ button {
   color: var(--color-text-muted);
 }
 
-.library__add-book,
 .library__content {
   margin-bottom: $space-8;
-}
-
-.library__add-book {
-  padding: $space-6;
-  border: 1px solid var(--color-border);
-  border-radius: $radius-md;
-  background: var(--color-surface);
-
-  h2 {
-    margin: 0;
-    font-size: $font-size-lg;
-  }
 }
 
 .library__toolbar {

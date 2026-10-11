@@ -1,3 +1,5 @@
+import BookForm from "./components/bookForm/bookForm";
+
 function App() {
   return (
     <main className="library">
@@ -10,10 +12,7 @@ function App() {
         <span className="library__count">0 books</span>
       </header>
 
-      <section className="library__add-book">
-        <h2>Add a book</h2>
-        {/* Add the form here. */}
-      </section>
+      <BookForm />
 
       <section className="library__content">
         <div className="library__toolbar">
