@@ -1,4 +1,6 @@
+import BookFilters from "./components/bookFilters/bookFilters";
 import BookForm from "./components/bookForm/bookForm";
+import BookList from "./components/bookList/bookList";
 
 function App() {
   return (
@@ -21,32 +23,9 @@ function App() {
           {/* Search will go here. */}
         </div>
 
-        <nav
-          className="library__filters"
-          aria-label="Filter books by reading status"
-        >
-          <button
-            type="button"
-            className="library__filter library__filter--active"
-          >
-            All books
-          </button>
-          <button type="button" className="library__filter">
-            Want to read
-          </button>
-          <button type="button" className="library__filter">
-            Currently reading
-          </button>
-          <button type="button" className="library__filter">
-            Read
-          </button>
-        </nav>
+        <BookFilters />
 
-        <div className="library__grid">
-          <p className="library__empty">
-            Your library is empty. Add your first book to get started.
-          </p>
-        </div>
+        <BookList />
       </section>
     </main>
   );
