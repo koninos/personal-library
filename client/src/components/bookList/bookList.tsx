@@ -1,11 +1,12 @@
-import type { Book } from "../../types/book";
+import type { Book, BookStatus } from "../../types/book";
 import "./bookList.scss";
 
 interface BookListProps {
   books: Book[];
+  onStatusChange: (bookId: Book["id"], status: BookStatus) => void;
 }
 
-function BookList({ books }: BookListProps) {
+function BookList({ books, onStatusChange }: BookListProps) {
   if (books.length === 0) {
     return (
       <div className="library__grid">
@@ -22,7 +23,20 @@ function BookList({ books }: BookListProps) {
         <article className="book-card" key={book.id}>
           <h3 className="book-card__title">{book.title}</h3>
           <p className="book-card__author">{book.author}</p>
-          <span className="book-card__status">{book.status}</span>
+          <label className="book-card__status-field">
+            <span>Reading status</span>
+            <select
+              value={book.status}
+              onChange={(event) =>
+                onStatusChange(book.id, event.target.value as BookStatus)
+              }
+              aria-label={`Reading status for ${book.title}`}
+            >
+              <option value="want-to-read">Want to read</option>
+              <option value="currently-reading">Currently reading</option>
+              <option value="read">Read</option>
+            </select>
+          </label>
         </article>
       ))}
     </div>

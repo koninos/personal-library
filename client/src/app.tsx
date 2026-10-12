@@ -26,6 +26,14 @@ function App() {
     setBooks((currentBooks) => [...currentBooks, book]);
   }
 
+  function handleStatusChange(bookId: Book["id"], status: BookStatus) {
+    setBooks((currentBooks) =>
+      currentBooks.map((book) =>
+        book.id === bookId ? { ...book, status } : book,
+      ),
+    );
+  }
+
   return (
     <main className="library">
       <header className="library__header">
@@ -53,7 +61,7 @@ function App() {
           onFilterChange={setActiveFilter}
         />
 
-        <BookList books={filteredBooks} />
+        <BookList books={filteredBooks} onStatusChange={handleStatusChange} />
       </section>
     </main>
   );
