@@ -1,11 +1,50 @@
+import { useState, type FormEvent } from "react";
+import { bookSchema, type BookFormData } from "../../schemas/bookSchema";
 import "./bookForm.scss";
 
-function BookForm() {
+interface BookFormProps {
+  onAddBook: (book: BookFormData) => void;
+}
+
+function BookForm({ onAddBook }: BookFormProps) {
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof BookFormData, string>>
+  >({});
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const result = bookSchema.safeParse({ title, author });
+
+    if (!result.success) {
+      const nextErrors: Partial<Record<keyof BookFormData, string>> = {};
+
+      for (const issue of result.error.issues) {
+        const field = issue.path[0];
+
+        if (field === "title" || field === "author") {
+          nextErrors[field] = issue.message;
+        }
+      }
+
+      setErrors(nextErrors);
+      return;
+    }
+
+    setErrors({});
+    onAddBook(result.data);
+
+    setTitle("");
+    setAuthor("");
+  }
+
   return (
     <section className="library__add-book">
       <h2>Add a book</h2>
 
-      <form className="book-form">
+      <form className="book-form" onSubmit={handleSubmit} noValidate>
         <div className="book-form__field">
           <label htmlFor="title">Title</label>
           <input
@@ -13,8 +52,19 @@ function BookForm() {
             name="title"
             type="text"
             placeholder="e.g. Clean Code"
-            required
+            value={title}
+            onChange={(event) => {
+              setTitle(event.target.value);
+              setErrors((current) => ({ ...current, title: undefined }));
+            }}
+            aria-invalid={Boolean(errors.title)}
+            aria-describedby={errors.title ? "title-error" : undefined}
           />
+          {errors.title && (
+            <p id="title-error" className="book-form__error">
+              {errors.title}
+            </p>
+          )}
         </div>
 
         <div className="book-form__field">
@@ -24,8 +74,19 @@ function BookForm() {
             name="author"
             type="text"
             placeholder="e.g. Robert C. Martin"
-            required
+            value={author}
+            onChange={(event) => {
+              setAuthor(event.target.value);
+              setErrors((current) => ({ ...current, author: undefined }));
+            }}
+            aria-invalid={Boolean(errors.author)}
+            aria-describedby={errors.author ? "author-error" : undefined}
           />
+          {errors.author && (
+            <p id="author-error" className="book-form__error">
+              {errors.author}
+            </p>
+          )}
         </div>
 
         <button className="book-form__submit" type="submit">
