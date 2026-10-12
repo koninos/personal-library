@@ -1,26 +1,43 @@
+import type { BookStatus } from "../../types/book";
 import "./bookFilters.scss";
 
-function BookFilters() {
+type BookFilter = "all" | BookStatus;
+
+interface BookFiltersProps {
+  activeFilter: BookFilter;
+  onFilterChange: (filter: BookFilter) => void;
+}
+
+const filters: { label: string; value: BookFilter }[] = [
+  { label: "All books", value: "all" },
+  { label: "Want to read", value: "want-to-read" },
+  { label: "Currently reading", value: "currently-reading" },
+  { label: "Read", value: "read" },
+];
+
+function BookFilters({ activeFilter, onFilterChange }: BookFiltersProps) {
   return (
     <nav
       className="library__filters"
       aria-label="Filter books by reading status"
     >
-      <button type="button" className="library__filter library__filter--active">
-        All books
-      </button>
+      {filters.map((filter) => {
+        const isCurrentFilterActive = activeFilter === filter.value;
 
-      <button type="button" className="library__filter">
-        Want to read
-      </button>
-
-      <button type="button" className="library__filter">
-        Currently reading
-      </button>
-
-      <button type="button" className="library__filter">
-        Read
-      </button>
+        return (
+          <button
+            key={filter.value}
+            type="button"
+            className={`library__filter ${
+              isCurrentFilterActive ? "library__filter--active" : ""
+            }`}
+            aria-pressed={isCurrentFilterActive}
+            onClick={() => onFilterChange(filter.value)}
+          >
+            {filter.label}
+          </button>
+        );
+      })}
     </nav>
   );
 }

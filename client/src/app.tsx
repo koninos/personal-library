@@ -2,11 +2,19 @@ import { useState } from "react";
 import BookFilters from "./components/bookFilters/bookFilters";
 import BookForm from "./components/bookForm/bookForm";
 import BookList from "./components/bookList/bookList";
-import type { Book } from "./types/book";
+import type { Book, BookStatus } from "./types/book";
 import type { BookFormData } from "./schemas/bookSchema";
+
+export type BookFilter = "all" | BookStatus;
 
 function App() {
   const [books, setBooks] = useState<Book[]>([]);
+  const [activeFilter, setActiveFilter] = useState<BookFilter>("all");
+
+  const filteredBooks =
+    activeFilter === "all"
+      ? books
+      : books.filter((book) => book.status === activeFilter);
 
   function handleAddBook(newBook: BookFormData) {
     const book: Book = {
@@ -40,9 +48,12 @@ function App() {
           {/* Search will go here. */}
         </div>
 
-        <BookFilters />
+        <BookFilters
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+        />
 
-        <BookList books={books} />
+        <BookList books={filteredBooks} />
       </section>
     </main>
   );
