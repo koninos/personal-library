@@ -34,6 +34,12 @@ function App() {
     );
   }
 
+  function handleDeleteBook(bookId: Book["id"]) {
+    setBooks((currentBooks) =>
+      currentBooks.filter((book) => book.id !== bookId),
+    );
+  }
+
   return (
     <main className="library">
       <header className="library__header">
@@ -61,7 +67,11 @@ function App() {
           onFilterChange={setActiveFilter}
         />
 
-        <BookList books={filteredBooks} onStatusChange={handleStatusChange} />
+        <BookList
+          books={filteredBooks}
+          onStatusChange={handleStatusChange}
+          onDeleteBook={handleDeleteBook}
+        />
       </section>
     </main>
   );

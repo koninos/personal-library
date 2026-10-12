@@ -4,9 +4,10 @@ import "./bookList.scss";
 interface BookListProps {
   books: Book[];
   onStatusChange: (bookId: Book["id"], status: BookStatus) => void;
+  onDeleteBook: (bookId: Book["id"]) => void;
 }
 
-function BookList({ books, onStatusChange }: BookListProps) {
+function BookList({ books, onStatusChange, onDeleteBook }: BookListProps) {
   if (books.length === 0) {
     return (
       <div className="library__grid">
@@ -37,6 +38,13 @@ function BookList({ books, onStatusChange }: BookListProps) {
               <option value="read">Read</option>
             </select>
           </label>
+          <button
+            className="book-card__delete"
+            type="button"
+            onClick={() => onDeleteBook(book.id)}
+          >
+            Delete
+          </button>
         </article>
       ))}
     </div>
