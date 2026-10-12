@@ -10,11 +10,20 @@ export type BookFilter = "all" | BookStatus;
 function App() {
   const [books, setBooks] = useState<Book[]>([]);
   const [activeFilter, setActiveFilter] = useState<BookFilter>("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredBooks =
-    activeFilter === "all"
-      ? books
-      : books.filter((book) => book.status === activeFilter);
+  const filteredBooks = books.filter((book) => {
+    const matchesStatus =
+      activeFilter === "all" || book.status === activeFilter;
+
+    const query = searchQuery.trim().toLowerCase();
+
+    const matchesSearch =
+      book.title.toLowerCase().includes(query) ||
+      book.author.toLowerCase().includes(query);
+
+    return matchesStatus && matchesSearch;
+  });
 
   function handleAddBook(newBook: BookFormData) {
     const book: Book = {
@@ -59,7 +68,15 @@ function App() {
         <div className="library__toolbar">
           <h2>Your books</h2>
 
-          {/* Search will go here. */}
+          <label className="library__search">
+            <span className="library__search-label">Search books</span>
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Search by title or author..."
+            />
+          </label>
         </div>
 
         <BookFilters
