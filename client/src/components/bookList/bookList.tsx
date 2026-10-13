@@ -3,16 +3,26 @@ import "./bookList.scss";
 
 interface BookListProps {
   books: Book[];
+  searchQuery: string;
   onStatusChange: (bookId: Book["id"], status: BookStatus) => void;
   onDeleteBook: (bookId: Book["id"]) => void;
 }
 
-function BookList({ books, onStatusChange, onDeleteBook }: BookListProps) {
+function BookList({
+  books,
+  searchQuery,
+  onStatusChange,
+  onDeleteBook,
+}: BookListProps) {
   if (books.length === 0) {
+    const hasSearchQuery = searchQuery.trim().length > 0;
+
     return (
       <div className="library__grid">
         <p className="library__empty">
-          Your library is empty. Add your first book to get started.
+          {hasSearchQuery
+            ? "No books match your search."
+            : "Your library is empty. Add your first book to get started."}
         </p>
       </div>
     );

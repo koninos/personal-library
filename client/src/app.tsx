@@ -86,6 +86,7 @@ function App() {
 
         <BookList
           books={filteredBooks}
+          searchQuery={searchQuery}
           onStatusChange={handleStatusChange}
           onDeleteBook={handleDeleteBook}
         />
