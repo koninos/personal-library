@@ -1,12 +1,19 @@
 import express from "express";
+import { pool } from "../src/config/database.js";
 
 const app = express();
-const port = 3000;
+const port = Number(process.env.PORT) || 3000;
 
 app.use(express.json());
 
-app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok" });
+app.get("/api/health", async (_req, res) => {
+  try {
+    await pool.query("SELECT 1");
+    res.json({ status: "ok", database: "connected" });
+  } catch (error) {
+    console.error("Database health check failed:", error);
+    res.status(503).json({ status: "error", database: "disconnected" });
+  }
 });
 
 app.listen(port, () => {
