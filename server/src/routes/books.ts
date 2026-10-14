@@ -1,6 +1,9 @@
 import { Router } from "express";
 import { pool } from "../config/database.js";
-import { createBookSchema } from "../schemas/bookSchema.js";
+import {
+  createBookSchema,
+  updateBookStatusSchema,
+} from "../schemas/bookSchema.js";
 
 const router = Router();
 
@@ -45,6 +48,71 @@ router.post("/", async (req, res) => {
   } catch (error) {
     console.error("Failed to create book:", error);
     res.status(500).json({ error: "Failed to create book" });
+  }
+});
+
+router.patch("/:id", async (req, res) => {
+  const id = Number(req.params.id);
+
+  if (!Number.isInteger(id) || id <= 0) {
+    res.status(400).json({ error: "Invalid book ID" });
+    return;
+  }
+
+  const validation = updateBookStatusSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    res.status(400).json({
+      error: "Invalid book status",
+      details: validation.error.flatten(),
+    });
+    return;
+  }
+
+  try {
+    const result = await pool.query(
+      `UPDATE books
+       SET status = $1
+       WHERE id = $2
+       RETURNING id, title, author, isbn, status`,
+      [validation.data.status, id],
+    );
+
+    if (result.rows.length === 0) {
+      res.status(404).json({ error: "Book not found" });
+      return;
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Failed to update book:", error);
+    res.status(500).json({ error: "Failed to update book" });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  const id = Number(req.params.id);
+
+  if (!Number.isInteger(id) || id <= 0) {
+    res.status(400).json({ error: "Invalid book ID" });
+    return;
+  }
+
+  try {
+    const result = await pool.query(
+      "DELETE FROM books WHERE id = $1 RETURNING id",
+      [id],
+    );
+
+    if (result.rows.length === 0) {
+      res.status(404).json({ error: "Book not found" });
+      return;
+    }
+
+    res.status(204).send();
+  } catch (error) {
+    console.error("Failed to delete book:", error);
+    res.status(500).json({ error: "Failed to delete book" });
   }
 });
 

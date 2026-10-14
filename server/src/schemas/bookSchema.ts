@@ -5,3 +5,7 @@ export const createBookSchema = z.object({
   author: z.string().trim().min(1, "Author is required").max(255),
   isbn: z.string().trim().max(20).optional(),
 });
+
+export const updateBookStatusSchema = z.object({
+  status: z.enum(["want-to-read", "currently-reading", "read"]),
+});
