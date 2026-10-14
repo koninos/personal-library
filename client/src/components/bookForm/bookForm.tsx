@@ -3,7 +3,7 @@ import { bookSchema, type BookFormData } from "../../schemas/bookSchema";
 import "./bookForm.scss";
 
 interface BookFormProps {
-  onAddBook: (book: BookFormData) => void;
+  onAddBook: (book: BookFormData) => Promise<void>;
 }
 
 function BookForm({ onAddBook }: BookFormProps) {
@@ -13,7 +13,7 @@ function BookForm({ onAddBook }: BookFormProps) {
     Partial<Record<keyof BookFormData, string>>
   >({});
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const result = bookSchema.safeParse({ title, author });
@@ -33,12 +33,17 @@ function BookForm({ onAddBook }: BookFormProps) {
       return;
     }
 
-    setErrors({});
-    onAddBook(result.data);
+    try {
+      await onAddBook(result.data);
 
-    setTitle("");
-    setAuthor("");
-  }
+      setTitle("");
+      setAuthor("");
+      setErrors({});
+    } catch {
+      // app.tsx already records and displays the API error.
+      // Preserve the form values so the user can retry.
+    }
+  };
 
   return (
     <section className="library__add-book">
