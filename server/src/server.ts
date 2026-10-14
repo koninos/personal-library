@@ -1,11 +1,19 @@
 import express from "express";
 import { pool } from "../src/config/database.js";
 import booksRouter from "./routes/books.js";
+import "dotenv/config";
+import cors from "cors";
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
 
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
+  }),
+);
 
 app.get("/api/health", async (_req, res) => {
   try {
