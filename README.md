@@ -1,6 +1,10 @@
 # Personal Library
 
-A full-stack personal book library built with React, TypeScript, Express, and PostgreSQL. Manage your books, track reading progress, and quickly find books using search and status filters.
+A full-stack web application for managing your personal book collection and tracking your reading progress.
+
+**[🚀 Live Demo](https://personal-library-three.vercel.app/)**
+
+Built with React, TypeScript, Node.js, Express, and PostgreSQL.
 
 ## Features
 
