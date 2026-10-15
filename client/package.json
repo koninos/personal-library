@@ -1,7 +1,9 @@
 {
-  "name": "client",
+  "name": "personal-library-client",
+  "author": "Konstantinos Gialouris",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "A personal book library built with React, TypeScript, and Sass.",
   "type": "module",
   "scripts": {
     "dev": "vite",

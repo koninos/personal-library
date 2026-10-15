@@ -1,7 +1,8 @@
 {
-  "name": "server",
+  "name": "personal-library-server",
+  "author": "Konstantinos Gialouris",
   "version": "1.0.0",
-  "description": "",
+  "description": "A REST API for a personal book library, built with Express, TypeScript, and PostgreSQL.",
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
@@ -9,7 +10,6 @@
     "start": "node dist/server.js"
   },
   "keywords": [],
-  "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
