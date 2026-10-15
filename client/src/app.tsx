@@ -151,6 +151,7 @@ function App() {
           <BookList
             books={filteredBooks}
             searchQuery={searchQuery}
+            activeFilter={activeFilter}
             updatingBookIds={updatingBookIds}
             deletingBookIds={deletingBookIds}
             onStatusChange={handleStatusChange}

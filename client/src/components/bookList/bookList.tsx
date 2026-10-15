@@ -4,6 +4,7 @@ import "./bookList.scss";
 interface BookListProps {
   books: Book[];
   searchQuery: string;
+  activeFilter: "all" | BookStatus;
   updatingBookIds: number[];
   deletingBookIds: number[];
   onStatusChange: (bookId: Book["id"], status: BookStatus) => void;
@@ -13,6 +14,7 @@ interface BookListProps {
 function BookList({
   books,
   searchQuery,
+  activeFilter,
   updatingBookIds,
   deletingBookIds,
   onStatusChange,
@@ -20,14 +22,16 @@ function BookList({
 }: BookListProps) {
   if (books.length === 0) {
     const hasSearchQuery = searchQuery.trim().length > 0;
+    const hasActiveFilter = activeFilter !== "all";
+
+    const emptyMessage =
+      hasSearchQuery || hasActiveFilter
+        ? "No books match your filters."
+        : "Your library is empty. Add your first book to get started.";
 
     return (
       <div className="library__grid">
-        <p className="library__empty">
-          {hasSearchQuery
-            ? "No books match your search."
-            : "Your library is empty. Add your first book to get started."}
-        </p>
+        <p className="library__empty">{emptyMessage}</p>
       </div>
     );
   }
