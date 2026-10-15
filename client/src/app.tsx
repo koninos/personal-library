@@ -4,13 +4,21 @@ import BookForm from "./components/bookForm/bookForm";
 import BookList from "./components/bookList/bookList";
 import type { Book, BookStatus } from "./types/book";
 import type { BookFormData } from "./schemas/bookSchema";
-import { createBook, getBooks } from "./services/bookService";
+import {
+  createBook,
+  getBooks,
+  deleteBook,
+  updateBookStatus,
+} from "./services/bookService";
 
 export type BookFilter = "all" | BookStatus;
 
 function App() {
   const [books, setBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdding, setIsAdding] = useState(false);
+  const [updatingBookIds, setUpdatingBookIds] = useState<number[]>([]);
+  const [deletingBookIds, setDeletingBookIds] = useState<number[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const [activeFilter, setActiveFilter] = useState<BookFilter>("all");
@@ -46,8 +54,9 @@ function App() {
   });
 
   async function handleAddBook(newBook: BookFormData) {
+    setIsAdding(true);
+
     try {
-      setIsLoading(true);
       setError(null);
 
       const createdBook = await createBook(newBook);
@@ -58,22 +67,44 @@ function App() {
       setError("Could not add the book. Please try again.");
       throw error;
     } finally {
-      setIsLoading(false);
+      setIsAdding(false);
     }
   }
 
-  function handleStatusChange(bookId: Book["id"], status: BookStatus) {
-    setBooks((currentBooks) =>
-      currentBooks.map((book) =>
-        book.id === bookId ? { ...book, status } : book,
-      ),
-    );
+  async function handleStatusChange(bookId: Book["id"], status: BookStatus) {
+    setUpdatingBookIds((ids) => [...ids, bookId]);
+    try {
+      setError(null);
+
+      const updatedBook = await updateBookStatus(bookId, status);
+
+      setBooks((currentBooks) =>
+        currentBooks.map((book) => (book.id === bookId ? updatedBook : book)),
+      );
+    } catch (err) {
+      console.error("Failed to update book status:", err);
+      setError("Could not update the book status. Please try again.");
+    } finally {
+      setUpdatingBookIds((ids) => ids.filter((id) => id !== bookId));
+    }
   }
 
-  function handleDeleteBook(bookId: Book["id"]) {
-    setBooks((currentBooks) =>
-      currentBooks.filter((book) => book.id !== bookId),
-    );
+  async function handleDeleteBook(bookId: Book["id"]) {
+    setDeletingBookIds((ids) => [...ids, bookId]);
+
+    try {
+      setError(null);
+      await deleteBook(bookId);
+
+      setBooks((currentBooks) =>
+        currentBooks.filter((book) => book.id !== bookId),
+      );
+    } catch (err) {
+      console.error("Failed to delete book:", err);
+      setError("Could not delete the book. Please try again.");
+    } finally {
+      setUpdatingBookIds((ids) => ids.filter((id) => id !== bookId));
+    }
   }
 
   return (
@@ -89,7 +120,7 @@ function App() {
         </span>
       </header>
 
-      <BookForm onAddBook={handleAddBook} />
+      <BookForm onAddBook={handleAddBook} isSubmitting={isAdding} />
 
       {isLoading ? (
         <p role="status">Loading books...</p>
@@ -119,6 +150,8 @@ function App() {
           <BookList
             books={filteredBooks}
             searchQuery={searchQuery}
+            updatingBookIds={updatingBookIds}
+            deletingBookIds={deletingBookIds}
             onStatusChange={handleStatusChange}
             onDeleteBook={handleDeleteBook}
           />

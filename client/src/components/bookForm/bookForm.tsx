@@ -3,10 +3,11 @@ import { bookSchema, type BookFormData } from "../../schemas/bookSchema";
 import "./bookForm.scss";
 
 interface BookFormProps {
+  isSubmitting: boolean;
   onAddBook: (book: BookFormData) => Promise<void>;
 }
 
-function BookForm({ onAddBook }: BookFormProps) {
+function BookForm({ onAddBook, isSubmitting }: BookFormProps) {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [errors, setErrors] = useState<
@@ -94,8 +95,12 @@ function BookForm({ onAddBook }: BookFormProps) {
           )}
         </div>
 
-        <button className="book-form__submit" type="submit">
-          Add book
+        <button
+          className="book-form__submit"
+          type="submit"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Adding..." : "Add Book"}
         </button>
       </form>
     </section>

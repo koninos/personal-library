@@ -4,6 +4,8 @@ import "./bookList.scss";
 interface BookListProps {
   books: Book[];
   searchQuery: string;
+  updatingBookIds: number[];
+  deletingBookIds: number[];
   onStatusChange: (bookId: Book["id"], status: BookStatus) => void;
   onDeleteBook: (bookId: Book["id"]) => void;
 }
@@ -11,6 +13,8 @@ interface BookListProps {
 function BookList({
   books,
   searchQuery,
+  updatingBookIds,
+  deletingBookIds,
   onStatusChange,
   onDeleteBook,
 }: BookListProps) {
@@ -30,33 +34,40 @@ function BookList({
 
   return (
     <div className="library__grid">
-      {books.map((book) => (
-        <article className="book-card" key={book.id}>
-          <h3 className="book-card__title">{book.title}</h3>
-          <p className="book-card__author">{book.author}</p>
-          <label className="book-card__status-field">
-            <span>Reading status</span>
-            <select
-              value={book.status}
-              onChange={(event) =>
-                onStatusChange(book.id, event.target.value as BookStatus)
-              }
-              aria-label={`Reading status for ${book.title}`}
+      {books.map(({ id, title, author, status }) => {
+        const isUpdating = updatingBookIds.includes(id);
+        const isDeleting = deletingBookIds.includes(id);
+
+        return (
+          <article className="book-card" key={id}>
+            <h3 className="book-card__title">{title}</h3>
+            <p className="book-card__author">{author}</p>
+            <label className="book-card__status-field">
+              <span>Reading status</span>
+              <select
+                value={status}
+                disabled={isUpdating}
+                onChange={(event) =>
+                  onStatusChange(id, event.target.value as BookStatus)
+                }
+                aria-label={`Reading status for ${title}`}
+              >
+                <option value="want-to-read">Want to read</option>
+                <option value="currently-reading">Currently reading</option>
+                <option value="read">Read</option>
+              </select>
+            </label>
+            <button
+              className="book-card__delete"
+              type="button"
+              disabled={isDeleting}
+              onClick={() => onDeleteBook(id)}
             >
-              <option value="want-to-read">Want to read</option>
-              <option value="currently-reading">Currently reading</option>
-              <option value="read">Read</option>
-            </select>
-          </label>
-          <button
-            className="book-card__delete"
-            type="button"
-            onClick={() => onDeleteBook(book.id)}
-          >
-            Delete
-          </button>
-        </article>
-      ))}
+              {isDeleting ? "Deleting" : "Delete"}
+            </button>
+          </article>
+        );
+      })}
     </div>
   );
 }
