@@ -7,6 +7,11 @@ import cors from "cors";
 const app = express();
 const port = Number(process.env.PORT) || 3000;
 
+const artificialDelayMs =
+  process.env.NODE_ENV === "production"
+    ? 0
+    : Number(process.env.ARTIFICIAL_DELAY_MS) || 0;
+
 app.use(express.json());
 
 app.use(
@@ -14,6 +19,13 @@ app.use(
     origin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
   }),
 );
+
+if (artificialDelayMs > 0) {
+  app.use(async (_req, _res, next) => {
+    await new Promise((resolve) => setTimeout(resolve, artificialDelayMs));
+    next();
+  });
+}
 
 app.get("/api/health", async (_req, res) => {
   try {
