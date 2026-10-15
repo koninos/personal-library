@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { bookSchema, type BookFormData } from "../../schemas/bookSchema";
 import "./bookForm.scss";
 
