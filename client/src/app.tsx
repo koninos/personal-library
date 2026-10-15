@@ -10,6 +10,7 @@ import {
   deleteBook,
   updateBookStatus,
 } from "./services/bookService";
+import { BookListSkeleton } from "./components/bookListSkeleton/bookListSkeleton";
 
 export type BookFilter = "all" | BookStatus;
 
@@ -123,7 +124,7 @@ function App() {
       <BookForm onAddBook={handleAddBook} isSubmitting={isAdding} />
 
       {isLoading ? (
-        <p role="status">Loading books...</p>
+        <BookListSkeleton />
       ) : error ? (
         <p role="alert">{error}</p>
       ) : (
