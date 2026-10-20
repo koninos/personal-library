@@ -36,15 +36,20 @@ Built with React, TypeScript, Node.js, Express, and PostgreSQL.
 - `pg` for database access
 - Zod for request validation
 
-**Development Tools**
+**Testing and Development Tools**
 
-- Docker Compose
+- Vitest and Supertest for backend testing
 - ESLint
+- Docker Compose
+- GitHub Actions for continuous integration
 
 ## Project Structure
 
 ```text
 personal-library/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── client/             # React frontend
 ├── server/             # Express REST API
 ├── database/
@@ -57,6 +62,7 @@ personal-library/
 
 - Node.js and npm
 - Docker with Docker Compose
+- Git
 
 ## Local Setup
 
@@ -88,7 +94,7 @@ cd client
 cp .env.example .env
 ```
 
-Review the values in each `.env` file if your local ports or database credentials differ.
+Review the values in each .env file if your local ports or database credentials differ. The backend uses DATABASE_URL for normal development and TEST_DATABASE_URL when running tests.
 
 ### 3. Install dependencies
 
@@ -126,15 +132,88 @@ npm run dev
 
 Open `http://localhost:5173` in your browser.
 
+## Testing
+
+The backend uses Vitest for automated tests and Supertest for HTTP integration tests. Tests cover request validation, CRUD endpoint behavior, database persistence, and the health endpoint.
+
+### 1. Create the test database
+
+Start the local PostgreSQL container first. Create the test database once:
+
+```bash
+docker compose exec db psql -U library_user -d postgres \
+  -c "CREATE DATABASE personal_library_test OWNER library_user;"
+```
+
+Initialize its schema:
+
+```bash
+docker compose exec -T db psql -U library_user -d personal_library_test \
+  < database/init.sql
+```
+
+Ensure `server/.env` contains the appropriate test connection string for your local database:
+
+```dotenv
+TEST_DATABASE_URL=postgresql://library_user:library_dev_password@localhost:5433/personal_library_test
+```
+
+Use the credentials and port configured in your own Docker Compose setup.
+
+### 2. Run backend tests
+
+From `server/`:
+
+```bash
+npm test
+```
+
+The test command sets `NODE_ENV=test`, so the backend uses `TEST_DATABASE_URL` rather than the normal development database.
+
+**Important:** Tests clear and modify data in the test database. Never point `TEST_DATABASE_URL` at your production database.
+
+## Continuous Integration
+
+GitHub Actions automatically runs the CI workflow on pushes to `master` and pull requests targeting `master`.
+
+The workflow has two independent jobs:
+
+**Frontend checks**
+
+- Install dependencies with `npm ci`
+- Run ESLint
+- Run the TypeScript checks and Vite production build
+
+**Backend checks**
+
+- Install dependencies with `npm ci`
+- Compile TypeScript
+- Start a temporary PostgreSQL 17 service
+- Initialize the test schema
+- Run the automated backend tests
+
+CI uses a dedicated temporary database and does not connect to the production database.
+
+## Development Workflow
+
+The `master` branch is protected. Changes must be submitted through a pull request rather than pushed directly to `master`.
+
+Before a pull request can be merged, both required GitHub Actions checks must pass:
+
+- **Frontend checks:** ESLint and production build.
+- **Backend checks:** TypeScript build and automated tests against PostgreSQL 17.
+
+To contribute, create a feature branch, commit your changes, push the branch, and open a pull request targeting `master`.
+
 ## API Endpoints
 
-| Method | Endpoint                | Description                         |
-| ------ | ----------------------- | ----------------------------------- |
-| GET    | `/api/books`            | Retrieve all books                  |
-| POST   | `/api/books`            | Add a book                          |
-| PATCH  | `/api/books/:id/status` | Update a book's reading status      |
-| DELETE | `/api/books/:id`        | Delete a book                       |
-| GET    | `/api/health`           | Check API and database connectivity |
+| Method | Endpoint         | Description                         |
+| ------ | ---------------- | ----------------------------------- |
+| GET    | `/api/books`     | Retrieve all books                  |
+| POST   | `/api/books`     | Add a book                          |
+| PATCH  | `/api/books/:id` | Update a book's reading status      |
+| DELETE | `/api/books/:id` | Delete a book                       |
+| GET    | `/api/health`    | Check API and database connectivity |
 
 ## Production Builds
 
@@ -143,6 +222,13 @@ Build the frontend:
 ```bash
 cd client
 npm run build
+```
+
+Run frontend linting:
+
+```bash
+cd client
+npm run lint
 ```
 
 Build the backend:
