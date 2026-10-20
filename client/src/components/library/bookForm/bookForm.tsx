@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { bookSchema, type BookFormData } from "../../schemas/bookSchema";
+
 import "./bookForm.scss";
+import { bookSchema, type BookFormData } from "../../../schemas/bookSchema";
 
 interface BookFormProps {
   isSubmitting: boolean;

@@ -1,19 +1,4 @@
-@use "../../styles/variables" as *;
-
-.library__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
-  gap: $space-6;
-}
-
-.library__empty {
-  grid-column: 1 / -1;
-  padding: $space-12 $space-4;
-  border: 1px dashed var(--color-border-strong);
-  border-radius: $radius-md;
-  color: var(--color-text-muted);
-  text-align: center;
-}
+@use "../../../styles/variables" as *;
 
 .book-card {
   padding: $space-6;
