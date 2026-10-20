@@ -1,7 +1,5 @@
-import type { BookStatus } from "../../types/book";
+import type { BookFilter } from "../library";
 import "./bookFilters.scss";
-
-type BookFilter = "all" | BookStatus;
 
 interface BookFiltersProps {
   activeFilter: BookFilter;

@@ -1,0 +1,33 @@
+@use "../../../styles/variables" as *;
+
+.library__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $space-6;
+  margin-bottom: $space-8;
+
+  h1 {
+    margin: 0;
+    font-size: $font-size-2xl;
+  }
+
+  p {
+    margin: $space-2 0 0;
+    color: var(--color-text-muted);
+  }
+
+  .library__count {
+    white-space: nowrap;
+    font-size: $font-size-sm;
+    color: var(--color-text-muted);
+  }
+}
+
+@media (max-width: 600px) {
+  .library__header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: $space-3;
+  }
+}
