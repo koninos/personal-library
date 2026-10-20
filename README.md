@@ -194,6 +194,17 @@ The workflow has two independent jobs:
 
 CI uses a dedicated temporary database and does not connect to the production database.
 
+## Development Workflow
+
+The `master` branch is protected. Changes must be submitted through a pull request rather than pushed directly to `master`.
+
+Before a pull request can be merged, both required GitHub Actions checks must pass:
+
+- **Frontend checks:** ESLint and production build.
+- **Backend checks:** TypeScript build and automated tests against PostgreSQL 17.
+
+To contribute, create a feature branch, commit your changes, push the branch, and open a pull request targeting `master`.
+
 ## API Endpoints
 
 | Method | Endpoint         | Description                         |
