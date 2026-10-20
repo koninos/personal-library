@@ -108,7 +108,7 @@ function Library() {
       console.error("Failed to delete book:", err);
       setError("Could not delete the book. Please try again.");
     } finally {
-      setUpdatingBookIds((ids) => ids.filter((id) => id !== bookId));
+      setDeletingBookIds((ids) => ids.filter((id) => id !== bookId));
     }
   }
 
