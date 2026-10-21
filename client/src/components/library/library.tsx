@@ -15,11 +15,13 @@ import LibraryHeader from "./libraryHeader/libraryHeader";
 import LibraryToolbar from "./libraryToolbar/libraryToolbar";
 import BookForm from "./bookForm/bookForm";
 import BookList from "./bookList/bookList";
+import Modal from "../../shared/modal/modal";
 
 export type BookFilter = "all" | BookStatus;
 
 function Library() {
   const [books, setBooks] = useState<Book[]>([]);
+  const [isBookFormOpen, setIsBookFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
   const [updatingBookIds, setUpdatingBookIds] = useState<number[]>([]);
@@ -67,6 +69,7 @@ function Library() {
       const createdBook = await createBook(newBook);
 
       setBooks((currentBooks) => [createdBook, ...currentBooks]);
+      setIsBookFormOpen(false);
     } catch (error) {
       console.error("Failed to add book:", error);
       setError("Could not add the book. Please try again.");
@@ -116,8 +119,19 @@ function Library() {
     <main className="library">
       <LibraryHeader bookCount={books.length} />
 
-      <BookForm onAddBook={handleAddBook} isSubmitting={isAdding} />
+      <button
+        type="button"
+        className="library__add-button"
+        onClick={() => setIsBookFormOpen(true)}
+      >
+        Add book
+      </button>
 
+      {isBookFormOpen && (
+        <Modal title="Add a book" onClose={() => setIsBookFormOpen(false)}>
+          <BookForm onAddBook={handleAddBook} isSubmitting={isAdding} />
+        </Modal>
+      )}
       {isLoading ? (
         <BookListSkeleton />
       ) : error ? (

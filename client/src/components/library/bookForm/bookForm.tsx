@@ -49,8 +49,6 @@ function BookForm({ onAddBook, isSubmitting }: BookFormProps) {
 
   return (
     <section className="library__add-book">
-      <h2>Add a book</h2>
-
       <form className="book-form" onSubmit={handleSubmit} noValidate>
         <div className="book-form__field">
           <label htmlFor="title">Title</label>
@@ -101,7 +99,7 @@ function BookForm({ onAddBook, isSubmitting }: BookFormProps) {
           type="submit"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Adding..." : "Add Book"}
+          {isSubmitting ? "Saving..." : "Save Book"}
         </button>
       </form>
     </section>
