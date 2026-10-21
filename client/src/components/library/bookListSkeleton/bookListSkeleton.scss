@@ -1,5 +1,12 @@
 @use "../../../styles/variables" as *;
 
+.skeleton__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  gap: $space-6;
+  margin: $space-4 0px;
+}
+
 .book-card--skeleton {
   pointer-events: none;
 }

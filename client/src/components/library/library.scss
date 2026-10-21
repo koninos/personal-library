@@ -3,6 +3,27 @@
 .library {
   width: min(1100px, calc(100% - $space-8 - $space-4));
   margin: $space-12 auto;
+
+  &__add-button {
+    padding: $space-3 $space-4;
+    border: none;
+    border-radius: 6px;
+    background-color: var(--color-primary);
+    color: white;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 180ms ease;
+
+    &:hover {
+      background-color: var(--color-primary-hover);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 3px;
+    }
+  }
 }
 
 .library__content {
